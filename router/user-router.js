@@ -18,7 +18,7 @@ userRouter.get(
 userRouter.patch(
 	"/:id",
 	validationMiddleware.validateSignToken,
-	validationMiddleware.validateUserUpdate,
+	validationMiddleware.validateUpdate,
 	userController.updateUserById
 );
 userRouter.delete(
