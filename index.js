@@ -1,8 +1,9 @@
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
-import userRouter from "./router/user-router.js";
 import MongoDb from "./mongoose/mongoose.js";
+import userRouter from "./router/user-router.js";
+import shiftsRouter from "./router/shifts-router.js";
 
 dotenv.config();
 
@@ -23,6 +24,7 @@ app.use(express.json());
 app.use(cors());
 
 app.use("/api/user", userRouter);
+app.use("/api/shifts", shiftsRouter);
 
 app.listen(port, () => {
 	console.log(`Server is running at http://localhost:${port}`);

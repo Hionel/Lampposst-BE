@@ -1,81 +1,67 @@
 import { UserSchema } from "../models/userSchema.js";
-import { sendResponse } from "./controllers-utils.js";
+import {
+	sendResponse,
+	addEntryToDB,
+	getAll,
+	getById,
+	updateById,
+	deleteData,
+} from "./controllers-utils.js";
+import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
 
 export const getAllUsers = async (req, res) => {
-	try {
-		const usersArray = await UserSchema.find({ permission: "user" }).select(
-			"-password"
-		);
-		return sendResponse(
-			res,
-			200,
-			"OK",
-			"All users' data retrieved !",
-			usersArray
-		);
-	} catch (error) {
-		return sendResponse(res, 400, "Bad request", `${error}`);
-	}
+	const query = { permission: "user" };
+	const queryProjection = "-password";
+	getAll(res, UserSchema, query, queryProjection, "users");
 };
 
 export const getUserById = async (req, res) => {
 	const userID = req.params.id;
-	try {
-		const userData = await UserSchema.findById(userID);
-		return sendResponse(res, 200, "Ok", "User found!", userData);
-	} catch (error) {
-		return sendResponse(res, 400, "Bad request", `${error}`);
-	}
+	return getById(res, UserSchema, userID, "User", "-password");
 };
 
 export const updateUserById = async (req, res) => {
 	const userID = req.params.id;
 	const newUserData = req.body;
-	try {
-		const updateResult = await UserSchema.updateOne(
-			{ _id: userID },
-			{ $set: newUserData }
-		);
-		if (!updateResult.acknowledged) {
-			return sendResponse(res, 408, "Request timed out", "Update failed");
-		}
-		return sendResponse(res, 200, "Ok", `${userID}'s account data updated!`);
-	} catch (error) {
-		return sendResponse(res, 400, "Bad request", `${error}`);
-	}
+	return updateById(res, UserSchema, userID, newUserData, "user");
 };
 
 export const deleteUser = async (req, res) => {
 	const accountID = req.params.id;
-	try {
-		await UserSchema.deleteOne({ _id: accountID });
-		return sendResponse(
-			res,
-			200,
-			"Ok",
-			`Account: ${accountID} was deleted succesfully!`
-		);
-	} catch (error) {
-		return sendResponse(res, 400, "Bad request", `${error}`);
-	}
+	return deleteData(res, UserSchema, accountID, "Account");
 };
 
+// Auth functions
 export const createUser = async (req, res) => {
 	const user = new UserSchema({
 		_id: new mongoose.Types.ObjectId(),
 		...req.body,
 	});
+	return addEntryToDB(res, user, "users");
+};
+
+export const login = (req, res) => {
 	try {
-		await user.save();
-		return sendResponse(
-			res,
-			201,
-			"Created",
-			"Created account succesfully!",
-			user
-		);
+		const user = req.data;
+		const { id, email, permission } = user;
+		const sessionJwt = signToken(id, email, permission);
+		res.setHeader("Accesstoken", sessionJwt);
+		return sendResponse(res, 200, "Ok", `Login succesfull!`);
 	} catch (error) {
 		return sendResponse(res, 400, "Bad request", `${error}`);
 	}
+};
+
+const signToken = (id, email, permission) => {
+	const tokenData = {
+		id: id,
+		email: email,
+		permission: permission,
+	};
+	const secretKey = process.env.JWT_PASS;
+	const expiryTime = process.env.JWT_EXPIRY;
+	return jwt.sign(tokenData, secretKey, {
+		expiresIn: expiryTime,
+	});
 };
