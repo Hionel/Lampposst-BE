@@ -6,6 +6,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
 import { sendResponse } from "../controllers/controllers-utils.js";
+import { CommentSchema } from "../models/commentSchema.js";
 
 export const validateUserRegistration = async (req, res, next) => {
 	const registrationData = req.body;

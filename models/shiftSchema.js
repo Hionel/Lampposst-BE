@@ -14,6 +14,10 @@ const shiftSchema = new mongoose.Schema({
 		type: String,
 		required: true,
 	},
+	place: {
+		type: String,
+		required: true,
+	},
 	pay_perHour: {
 		type: Number,
 		required: true,
