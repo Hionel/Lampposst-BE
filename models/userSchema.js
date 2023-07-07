@@ -41,7 +41,7 @@ const userSchema = new mongoose.Schema({
 	permission: {
 		type: String,
 		ref: "permission",
-		default: "user",
+		default: "64a80b74ac47e9f84beaa790",
 	},
 });
 

@@ -33,7 +33,7 @@ commentRouter.delete(
 	commentController.deleteComment
 );
 commentRouter.get(
-	"/:userId",
+	"/user/:userId",
 	validationMiddleware.validateSignToken,
 	commentController.getAllUserComments
 );

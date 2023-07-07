@@ -6,6 +6,8 @@ import {
 	deleteData,
 } from "./controllers-utils.js";
 import { CommentSchema } from "../models/commentSchema.js";
+import jwt from "jsonwebtoken";
+import mongoose from "mongoose";
 
 export const getAllComments = (req, res) => {
 	return getAll(res, CommentSchema, {}, "", "comments");
@@ -26,7 +28,7 @@ export const createComment = (req, res) => {
 export const updateCommentById = (req, res) => {
 	const commentId = req.params.id;
 	const newCommentData = req.body;
-	return updateById(res, CommentSchema, commentId, newCommentData, "shift");
+	return updateById(res, CommentSchema, commentId, newCommentData, "comment");
 };
 
 export const deleteComment = (req, res) => {
@@ -39,6 +41,7 @@ export const getAllUserComments = async (req, res) => {
 		res,
 		CommentSchema,
 		{ userId: userId },
-		`${userId}'s comments'`
+		"",
+		`${userId}'s comments`
 	);
 };

@@ -1,12 +1,12 @@
 import { UserSchema } from "../models/userSchema.js";
 import { ShiftSchema } from "../models/shiftSchema.js";
+import { PermissionSchema } from "../models/permissionSchema.js";
 import mongoose from "mongoose";
 
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
 import { sendResponse } from "../controllers/controllers-utils.js";
-import { CommentSchema } from "../models/commentSchema.js";
 
 export const validateUserRegistration = async (req, res, next) => {
 	const registrationData = req.body;
@@ -31,6 +31,7 @@ export const validateUserRegistration = async (req, res, next) => {
 	if (emailExists) {
 		return sendResponse(res, 409, "Conflict", "Email already in use!");
 	}
+
 	next();
 };
 
@@ -71,11 +72,14 @@ export const validateAdminPermission = async (req, res, next) => {
 		return sendResponse(res, 400, "Bad request", "Request has no ID!");
 	}
 	const dbUserData = await UserSchema.findById(id);
+	const adminPermissionCode = (
+		await PermissionSchema.findOne({ description: "admin" })
+	)._id.toString();
 	if (
-		permission !== "admin" ||
+		permission !== adminPermissionCode ||
 		permission !== dbUserData.permission ||
 		email !== dbUserData.email ||
-		dbUserData.permission !== "admin"
+		dbUserData.permission !== adminPermissionCode
 	) {
 		return sendResponse(
 			res,

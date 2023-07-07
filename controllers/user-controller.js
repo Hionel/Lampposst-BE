@@ -1,3 +1,4 @@
+import { PermissionSchema } from "../models/permissionSchema.js";
 import { UserSchema } from "../models/userSchema.js";
 import {
 	sendResponse,
@@ -11,7 +12,10 @@ import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
 
 export const getAllUsers = async (req, res) => {
-	const query = { permission: "user" };
+	const userPermissionCode = (
+		await PermissionSchema.findOne({ description: "user" })
+	)._id.toString();
+	const query = { permission: userPermissionCode };
 	const queryProjection = "-password";
 	getAll(res, UserSchema, query, queryProjection, "users");
 };

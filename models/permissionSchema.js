@@ -5,4 +5,4 @@ const permissionSchema = new mongoose.Schema({
 	description: { type: String, required: true },
 });
 
-export const PermissionSchema = mongoose.model("Permission", permissionSchema);
+export const PermissionSchema = mongoose.model("permissions", permissionSchema);
