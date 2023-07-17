@@ -38,13 +38,15 @@ export const validateUserRegistration = async (req, res, next) => {
 export const validateUpdate = async (req, res, next) => {
 	const id = req.params.id;
 	const newData = req.body;
-	if (!id) {
-		return sendResponse(res, 400, "Bad request", "Request has no ID!");
-	}
 	if (!newData || Object.keys(newData).length < 1) {
 		return sendResponse(res, 400, "Bad request", "Request has no data!");
 	}
-	next();
+	try {
+		await UserSchema.findById(id);
+		next();
+	} catch (error) {
+		return sendResponse(res, 404, "Bad request", `${error}`);
+	}
 };
 
 export const validateLogin = async (req, res, next) => {

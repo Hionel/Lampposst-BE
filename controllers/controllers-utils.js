@@ -46,6 +46,7 @@ export const getAll = async (res, schema, query, queryProjection, document) => {
 export const getById = async (res, schema, id, document, queryProjection) => {
 	try {
 		const data = await schema.findById(id).select(queryProjection);
+		if (!data) throw new Error("No data found for the associated ID");
 		return sendResponse(res, 200, "Ok", `${document} found!`, data);
 	} catch (error) {
 		return sendResponse(res, 400, "Bad request", `${error}`);

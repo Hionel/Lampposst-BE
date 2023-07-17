@@ -17,7 +17,7 @@ export const getAllUsers = async (req, res) => {
 	)._id.toString();
 	const query = { permission: userPermissionCode };
 	const queryProjection = "-password";
-	getAll(res, UserSchema, query, queryProjection, "users");
+	return getAll(res, UserSchema, query, queryProjection, "users");
 };
 
 export const getUserById = async (req, res) => {
