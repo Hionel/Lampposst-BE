@@ -4,8 +4,10 @@ import {
 	getById,
 	updateById,
 	deleteData,
+	sendResponse,
 } from "./controllers-utils.js";
 import { CommentSchema } from "../models/commentSchema.js";
+import { UserSchema } from "../models/userSchema.js";
 import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
 
@@ -16,14 +18,21 @@ export const getCommentById = (req, res) => {
 	const commentId = req.params.id;
 	return getById(res, CommentSchema, commentId, "Comment", "");
 };
-export const createComment = (req, res) => {
+export const createComment = async (req, res) => {
 	const userId = jwt.decode(req.headers.accesstoken).id;
 	const comment = new CommentSchema({
 		_id: new mongoose.Types.ObjectId(),
 		userId: userId,
 		...req.body,
 	});
-	return addEntryToDB(res, comment, "comments");
+	try {
+		await UserSchema.findByIdAndUpdate(userId, {
+			$push: { comments: comment._id },
+		});
+		return addEntryToDB(res, comment, "comments");
+	} catch (error) {
+		return sendResponse(res, 400, "Bad request", `${error}`);
+	}
 };
 export const updateCommentById = (req, res) => {
 	const commentId = req.params.id;
