@@ -2,7 +2,7 @@ import chai from "chai";
 import supertest from "supertest";
 
 export const api = supertest("http://localhost:4200");
-const validUserId = "64a80df518c36c66d96ddc76";
+const validUserId = "64a80dc318c36c66d96ddc73";
 export const expiredToken =
 	"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YTgwZGY1MThjMzZjNjZkOTZkZGM3NiIsImVtYWlsIjoidGVzdDFAbWFpbC5jb20iLCJwZXJtaXNzaW9uIjoiNjRhODBiNzRhYzQ3ZTlmODRiZWFhNzkwIiwiaWF0IjoxNjg5MTY4NTg5LCJleHAiOjE2ODkxNjg1ODl9.7hIcRbSwbgsnxqM2NkwiLsdqbqkMDiLdTNxhl1bRimk";
 export let adminToken;
